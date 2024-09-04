@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Generos {
-	Arraylist<String> generos = new ArrayList<>();
+	ArrayList<String> generos = new ArrayList<>();
 	
 	public ArrayList<String> getGeneros() {
 		return generos;
