@@ -92,7 +92,7 @@ public class Sucursal {
             librosp.add(libro);
             libro.setFechaP(fechaPrestado);
             libro.setFechaD(fechaDevolucion);
-            libro.incrementarVecesP = libro.getVecesP() + 1;
+            libro.incrementarVecesP() = libro.getVecesP() + 1;
             miembro.agregarLibro(libro);
             return true;
         }
