@@ -6,6 +6,7 @@ public class DriverProgram {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Prestamo prestamo = new Prestamo();
+		String fecha = "";
         
         // Crear géneros
         Generos generos = new Generos();
@@ -56,10 +57,24 @@ public class DriverProgram {
                 Generos genero = new Generos();
                 genero.agregarGenero(generoSeleccionado);
                 
-                System.out.print("Fecha de publicación (yyyy-mm-dd): ");
-                Date fechap = Date.valueOf(scanner.nextLine());
+                System.out.print("Fecha de publicación (dd/MM/yyyy): ");
+				fecha = teclado.nextLine();
+                try {
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                        fechap = formato.parse(fecha);
+                    } catch (Exception e) {
+                        System.out.println("Formato de fecha incorrecto.");
+                        break;
+                    }
                 System.out.print("Fecha de donación (yyyy-mm-dd): ");
-                Date fechad = Date.valueOf(scanner.nextLine());
+                fecha1 = teclado.nextLine();
+                try {
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                        fechad = formato.parse(fecha1);
+                    } catch (Exception e) {
+                        System.out.println("Formato de fecha incorrecto.");
+                        break;
+                    }
                 System.out.print("Veces prestado: ");
                 int vecesp = Integer.parseInt(scanner.nextLine());
                 
