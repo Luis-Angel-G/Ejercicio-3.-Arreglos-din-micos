@@ -47,8 +47,43 @@ public class Sucursal {
 	}
 	
 	public String generosMasSolicitados(ArrayList<Libro> librosp) {
-		for (int i = 0; i < librosp.size(); i++) {
-			if (librosp.get(i).getGenero().equals())
+        ArrayList<String> generosUnicos = new ArrayList<>();
+        ArrayList<Integer> conteoSolicitudes = new ArrayList<>();
+        
+        for (Libro libro : librosp) {
+            for (String genero : libro.getGenero()) {
+                if (generosUnicos.contains(genero)) {
+                    int index = generosUnicos.indexOf(genero);
+                    conteoSolicitudes.set(index, conteoSolicitudes.get(index) + 1);
+                } else {
+                    generosUnicos.add(genero);
+                    conteoSolicitudes.add(1);
+                }
+            }
+        }
+        
+        String generoMasSolicitado = null;
+        int maxSolicitudes = 0;
+        
+        for (int i = 0; i < conteoSolicitudes.size(); i++) {
+            if (conteoSolicitudes.get(i) > maxSolicitudes) {
+                maxSolicitudes = conteoSolicitudes.get(i);
+                generoMasSolicitado = generosUnicos.get(i);
+            }
+        }
+        
+        return generoMasSolicitado;
+    }
+	
+	public String libroMasPrestado (ArrayList<Libro> librosp) {		
+		String libromasprestado = null;
+		int libromasp = 0;
+		for (Libro libro : librosp) {
+			if (libro.getVecesP() > libromasp) {
+				libromasp = libro.getVecesP();
+				libromasprestado = libro.getTitulo();
+			}
 		}
+		return libromasprestado;
 	}
 }
