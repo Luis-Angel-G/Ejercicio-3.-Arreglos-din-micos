@@ -3,6 +3,7 @@ import java.util.Date;
 
 public class Sucursal {
     private String nombre;
+	private ArrayList<Libro> libros = new ArrayList<>();
     private ArrayList<Libro> librosd = new ArrayList<>();
     private ArrayList<Miembro> miembros = new ArrayList<>();
     private ArrayList<Libro> librosp = new ArrayList<>();
@@ -14,6 +15,12 @@ public class Sucursal {
     }
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+	public ArrayList<Libro> getLibros() {
+        return libros;
+    }
+    public void agregarLibro(Libro libro) {
+        this.libros.add(libro);
     }
     public ArrayList<Libro> getLibrosD() {
         return librosd;
