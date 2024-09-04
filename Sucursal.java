@@ -41,4 +41,14 @@ public class Sucursal {
 	public void agregarLibroP(Libro librop) {
 		this.librosp.add(librop);
 	}
+	
+	public int cantidadLibrosP(ArrayList<Libro> librosp) {
+		return librosp.size();
+	}
+	
+	public String generosMasSolicitados(ArrayList<Libro> librosp) {
+		for (int i = 0; i < librosp.size(); i++) {
+			if (librosp.get(i).getGenero().equals())
+		}
+	}
 }
