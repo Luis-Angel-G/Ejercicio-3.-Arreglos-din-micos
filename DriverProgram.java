@@ -1,10 +1,12 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
 public class DriverProgram {
+    private static Scanner scanner = new Scanner(System.in);
+    
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Prestamo prestamo = new Prestamo();
         
         // Crear géneros
@@ -19,6 +21,7 @@ public class DriverProgram {
         }
         
         // Crear sucursales
+        ArrayList<Sucursal> sucursales = new ArrayList<>();
         System.out.println("¿Cuántas sucursales desea crear?");
         int cantidadSucursales = Integer.parseInt(scanner.nextLine());
         
@@ -56,14 +59,7 @@ public class DriverProgram {
                 Generos genero = new Generos();
                 genero.agregarGenero(generoSeleccionado);
                 
-                System.out.print("Fecha de publicación (yyyy-mm-dd): ");
-                Date fechap = Date.valueOf(scanner.nextLine());
-                System.out.print("Fecha de donación (yyyy-mm-dd): ");
-                Date fechad = Date.valueOf(scanner.nextLine());
-                System.out.print("Veces prestado: ");
-                int vecesp = Integer.parseInt(scanner.nextLine());
-                
-                Libro libro = new Libro(isbn, titulo, autor, año, genero, fechap, fechad, vecesp);
+                Libro libro = new Libro(isbn, titulo, autor, año, genero);
                 libros.add(libro);
             }
             
@@ -81,61 +77,98 @@ public class DriverProgram {
                 Miembro miembro = new Miembro();
                 miembro.setId(id);
                 miembro.setNombre(nombre);
+                
                 miembros.add(miembro);
             }
             
             // Agregar libros y miembros a la sucursal
             for (Libro libro : libros) {
                 sucursal.agregarLibro(libro);
+                sucursal.agregarLibroD(libro);
             }
             
             for (Miembro miembro : miembros) {
                 sucursal.agregarMiembro(miembro);
             }
             
-            prestamo.agregarSucursal(sucursal);
+            sucursales.add(sucursal);
         }
         
-        // Menú de opciones
         boolean continuar = true;
         while (continuar) {
-            System.out.println("\n--- Menú de Opciones ---");
-            System.out.println("1. Generar reporte de libros prestados");
-            System.out.println("2. Generar reporte de géneros más solicitados");
-            System.out.println("3. Generar reporte del libro más prestado");
-            System.out.println("4. Salir");
+            System.out.println("\nMenú:");
+            System.out.println("1. Prestar Libro");
+            System.out.println("2. Ver Estadísticas de Sucursal");
+            System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
+            
             int opcion = Integer.parseInt(scanner.nextLine());
             
             switch (opcion) {
                 case 1:
-                    for (Sucursal sucursal : prestamo.getSucursales()) {
-                        int cantidadLibrosPrestados = sucursal.cantidadLibrosP(sucursal.getLibrosP());
-                        System.out.println("Sucursal: " + sucursal.getNombre() + " - Cantidad de libros prestados: " + cantidadLibrosPrestados);
-                    }
+                    prestarLibro(sucursales);
                     break;
                 case 2:
-                    for (Sucursal sucursal : prestamo.getSucursales()) {
-                        String generoMasSolicitado = sucursal.generosMasSolicitados(sucursal.getLibrosP());
-                        System.out.println("Sucursal: " + sucursal.getNombre() + " - Género más solicitado: " + generoMasSolicitado);
-                    }
+                    verEstadisticas(sucursales);
                     break;
                 case 3:
-                    for (Sucursal sucursal : prestamo.getSucursales()) {
-                        String libroMasPrestado = sucursal.libroMasPrestado(sucursal.getLibrosP());
-                        System.out.println("Sucursal: " + sucursal.getNombre() + " - Libro más prestado: " + libroMasPrestado);
-                    }
-                    break;
-                case 4:
-                    System.out.println("Saliendo...");
                     continuar = false;
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
-                    break;
+                    System.out.println("Opción no válida.");
             }
         }
         
         scanner.close();
+    }
+    
+    private static void prestarLibro(ArrayList<Sucursal> sucursales) {
+        System.out.println("Seleccione la sucursal:");
+        for (int i = 0; i < sucursales.size(); i++) {
+            System.out.println((i + 1) + ". " + sucursales.get(i).getNombre());
+        }
+        int sucursalIndex = Integer.parseInt(scanner.nextLine()) - 1;
+        Sucursal sucursal = sucursales.get(sucursalIndex);
+        
+        System.out.print("Ingrese el ISBN del libro que desea prestar: ");
+        String isbn = scanner.nextLine();
+        System.out.print("Ingrese el ID del miembro que solicita el libro: ");
+        int miembroId = Integer.parseInt(scanner.nextLine());
+        System.out.print("Ingrese la fecha de prestado (dd/MM/yyyy): ");
+        String fechaPrestadoStr = scanner.nextLine();
+        System.out.print("Ingrese la fecha de devolución (dd/MM/yyyy): ");
+        String fechaDevolucionStr = scanner.nextLine();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date fechaPrestado = sdf.parse(fechaPrestadoStr);
+            Date fechaDevolucion = sdf.parse(fechaDevolucionStr);
+            Miembro miembro = sucursal.getMiembros().stream().filter(m -> m.getId() == miembroId).findFirst().orElse(null);
+            if (miembro != null) {
+                boolean prestado = sucursal.prestarLibro(isbn, miembro, fechaPrestado, fechaDevolucion);
+                if (prestado) {
+                    System.out.println("Libro prestado exitosamente.");
+                } else {
+                    System.out.println("El libro no está disponible.");
+                }
+            } else {
+                System.out.println("Miembro no encontrado.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error al parsear las fechas.");
+        }
+    }
+    
+    private static void verEstadisticas(ArrayList<Sucursal> sucursales) {
+        System.out.println("Seleccione la sucursal:");
+        for (int i = 0; i < sucursales.size(); i++) {
+            System.out.println((i + 1) + ". " + sucursales.get(i).getNombre());
+        }
+        int sucursalIndex = Integer.parseInt(scanner.nextLine()) - 1;
+        Sucursal sucursal = sucursales.get(sucursalIndex);
+        
+        System.out.println("Cantidad de libros prestados: " + sucursal.cantidadLibrosP());
+        System.out.println("Género más solicitado: " + sucursal.generosMasSolicitados());
+        System.out.println("Libro más prestado: " + sucursal.libroMasPrestado());
     }
 }
