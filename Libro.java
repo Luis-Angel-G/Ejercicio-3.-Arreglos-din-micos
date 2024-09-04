@@ -5,7 +5,7 @@ public class Libro {
 	private String titulo;
 	private String autor;
 	private int año;
-	private String genero;
+	private Generos genero;
 	private Date fechap;
 	private Date fechad;
 	private int vecesp = 0;
@@ -14,7 +14,7 @@ public class Libro {
 		
 	}
 	
-	public Libro(String isbn, String titulo, String autor, int año, String genero, Date fechap, Date fechad, int vecesp) {
+	public Libro(String isbn, String titulo, String autor, int año, Generos genero, Date fechap, Date fechad, int vecesp) {
 		this.isbn = isbn;
 		this.titulo = titulo;
 		this.autor = autor;
@@ -49,10 +49,10 @@ public class Libro {
 	public void setAño(int año) {
 		this.año = año;
 	}
-	public String getGenero() {
+	public Generos getGenero() {
 		return genero;
 	}
-	public void setGenero(String genero) {
+	public void setGenero(Generos genero) {
 		this.genero = genero;
 	}
 	public Date getFechaP() {
