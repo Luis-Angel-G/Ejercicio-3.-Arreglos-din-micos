@@ -1,52 +1,44 @@
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Sucursal {
-	private String nombre;
-	ArrayList<Libro> libros = new ArrayList<>();
-	ArrayList<Miembro> miembros = new ArrayList<>();
-	ArrayList<Libro> librosd = new ArrayList<>();
-	ArrayList<Libro> librosp = new ArrayList<>();
-	
-	public Sucursal() {
-		
-	}
-	
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	public ArrayList<Libro> getLibros() {
-		return libros;
-	}
-	public void agregarLibro(Libro libro) {
-		this.libros.add(libro);
-	}
-	public ArrayList<Miembro> getMiembros() {
-		return miembros;
-	}
-	public void agregarMiembro(Miembro miembro) {
-		this.miembros.add(miembro);
-	}
-	public ArrayList<Libro> getLibrosD() {
-		return librosd;
-	}
-	public void agregarLibroD(Libro librod) {
-		this.librosd.add(librod);
-	}
-	public ArrayList<Libro> getLibrosP() {
-		return librosp;
-	}
-	public void agregarLibroP(Libro librop) {
-		this.librosp.add(librop);
-	}
-	
-	public int cantidadLibrosP(ArrayList<Libro> librosp) {
-		return librosp.size();
-	}
-	
-	public String generosMasSolicitados(ArrayList<Libro> librosp) {
+    private String nombre;
+    private ArrayList<Libro> librosd = new ArrayList<>();
+    private ArrayList<Miembro> miembros = new ArrayList<>();
+    private ArrayList<Libro> librosp = new ArrayList<>();
+    
+    public Sucursal() {}
+    
+    public String getNombre() {
+        return nombre;
+    }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public ArrayList<Libro> getLibrosD() {
+        return librosd;
+    }
+    public void agregarLibroD(Libro libro) {
+        this.librosd.add(libro);
+    }
+    public ArrayList<Miembro> getMiembros() {
+        return miembros;
+    }
+    public void agregarMiembro(Miembro miembro) {
+        this.miembros.add(miembro);
+    }
+    public ArrayList<Libro> getLibrosP() {
+        return librosp;
+    }
+    public void agregarLibroP(Libro libro) {
+        this.librosp.add(libro);
+    }
+    
+    public int cantidadLibrosP() {
+        return librosp.size();
+    }
+    
+    public String generosMasSolicitados() {
         ArrayList<String> generosUnicos = new ArrayList<>();
         ArrayList<Integer> conteoSolicitudes = new ArrayList<>();
         
@@ -74,16 +66,36 @@ public class Sucursal {
         
         return generoMasSolicitado;
     }
-	
-	public String libroMasPrestado (ArrayList<Libro> librosp) {		
-		String libromasprestado = null;
-		int libromasp = 0;
-		for (Libro libro : librosp) {
-			if (libro.getVecesP() > libromasp) {
-				libromasp = libro.getVecesP();
-				libromasprestado = libro.getTitulo();
-			}
-		}
-		return libromasprestado;
-	}
+    
+    public String libroMasPrestado() {
+        String libroMasPrestado = null;
+        int maxVecesPrestado = 0;
+        for (Libro libro : librosp) {
+            if (libro.getVecesP() > maxVecesPrestado) {
+                maxVecesPrestado = libro.getVecesP();
+                libroMasPrestado = libro.getTitulo();
+            }
+        }
+        return libroMasPrestado;
+    }
+    
+    public boolean prestarLibro(String isbn, Miembro miembro, Date fechaPrestado, Date fechaDevolucion) {
+        Libro libro = null;
+        for (Libro l : librosd) {
+            if (l.getIsbn().equals(isbn)) {
+                libro = l;
+                break;
+            }
+        }
+        if (libro != null) {
+            librosd.remove(libro);
+            librosp.add(libro);
+            libro.setFechaP(fechaPrestado);
+            libro.setFechaD(fechaDevolucion);
+            libro.setVecesP(libro.getVecesP() + 1);
+            miembro.agregarLibro(libro);
+            return true;
+        }
+        return false;
+    }
 }
