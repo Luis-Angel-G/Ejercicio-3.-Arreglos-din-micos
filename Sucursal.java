@@ -51,7 +51,7 @@ public class Sucursal {
         ArrayList<Integer> conteoSolicitudes = new ArrayList<>();
         
         for (Libro libro : librosp) {
-            for (String genero : libro.getGenero()) {
+            for (String genero : libro.getGenero().getGeneros()) {
                 if (generosUnicos.contains(genero)) {
                     int index = generosUnicos.indexOf(genero);
                     conteoSolicitudes.set(index, conteoSolicitudes.get(index) + 1);
